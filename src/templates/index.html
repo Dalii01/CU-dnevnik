@@ -115,25 +115,25 @@
             <h2><i class="fas fa-chalkboard-teacher"></i> Мои ученики</h2>
             {% if students %}
                 <div class="students-grid">
-                    {% for student in students %}
+                    {% for student_data in students_with_means %}
                     <div class="student-card">
                         <div class="student-avatar">
                             <i class="fas fa-user"></i>
                         </div>
                         <div class="student-info">
-                            <h3>{{ student.name }}</h3>
-                            <p class="student-class">{{ student.class_name }}</p>
+                            <h3>{{ student_data.student.name }}</h3>
+                            <p class="student-class">{{ student_data.student.class_name }}</p>
 
                             <div class="average-grade-section">
-                                {% if statistics and statistics.total_grades > 0 %}
-                                <div class="average-grade">
-                                    <i class="fas fa-star"></i>
-                                    Средний балл: {{ "%.2f"|format(statistics.mean_grade) }}
-                                </div>
-                            {% else %}
-                                <div class="no-grades">Нет оценок</div>
-                            {% endif %}
-                        </div>
+                                {% if student_data.statistics and student_data.statistics.total_grades > 0 %}
+                                    <div class="average-grade">
+                                        <i class="fas fa-star"></i>
+                                        Средний балл: {{ "%.2f"|format(student_data.statistics.mean_grade) }}
+                                    </div>
+                                {% else %}
+                                    <div class="no-grades">Нет оценок</div>
+                                {% endif %}
+                            </div>
 
                             <a href="{{ url_for('students.student_diary', student_id=student.id) }}" class="btn btn-primary">
                                 <i class="fas fa-book-open"></i> Открыть дневник
