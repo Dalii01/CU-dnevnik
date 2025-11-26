@@ -123,6 +123,18 @@
                         <div class="student-info">
                             <h3>{{ student.name }}</h3>
                             <p class="student-class">{{ student.class_name }}</p>
+
+                            <div class="average-grade-section">
+                                {% if statistics and statistics.total_grades > 0 %}
+                                <div class="average-grade">
+                                    <i class="fas fa-star"></i>
+                                    Средний балл: {{ "%.2f"|format(statistics.mean_grade) }}
+                                </div>
+                            {% else %}
+                                <div class="no-grades">Нет оценок</div>
+                            {% endif %}
+                        </div>
+
                             <a href="{{ url_for('students.student_diary', student_id=student.id) }}" class="btn btn-primary">
                                 <i class="fas fa-book-open"></i> Открыть дневник
                             </a>
