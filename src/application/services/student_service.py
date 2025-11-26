@@ -125,22 +125,30 @@ class StudentService:
         grades = self.grade_repo.get_by_student(student_id)
         grade_values = [grade.grade for grade in grades]
         
-        total = sum(grade_values)
-        mean_grade = total / len(grade_values)
-        # округляем до двух знаков после запятой
-        mean_grade = round(mean_grade)
+        if not grade_values:
+            return {
+                'mean_grade': 0,
+                'median_grade': 0,
+                'total_grades': 0,
+                'grade_distribution': {}    
+            }
+        else:
+            total = sum(grade_values)
+            mean_grade = total / len(grade_values)
+            # округляем до двух знаков после запятой
+            mean_grade = round(mean_grade, 2)
         
         sorted_grades = sorted(grade_values)
         n = len(sorted_grades)
         if n % 2 == 1:
-            median_grade = (sorted_grades[n // 2 - 1] + sorted_grades[n // 2]) / 2
-        else:
             median_grade = sorted_grades[n // 2]
+        else:
+            median_grade = (sorted_grades[n // 2 - 1] + sorted_grades[n // 2]) / 2
         
         # Распределение оценок
         grade_distribution = {}
         for grade_value in grade_values:
-            grade_distribution[grade_value] = grade_distribution.get(grade_value, 1) + 1
+            grade_distribution[grade_value] = grade_distribution.get(grade_value, 0) + 1
         
         return {
             'mean_grade': mean_grade,
