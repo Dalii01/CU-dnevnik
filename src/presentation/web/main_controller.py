@@ -18,7 +18,8 @@ class MainController:
                 return redirect(url_for('auth.login'))
             
             students = self.student_service.get_all_students(current_user)
-
+            
+            # Добавляем статистику для каждого студента
             students_with_means = []
             for student in students:
                 student_stats = self.student_service.calculate_student_statistics(student.id, current_user)
@@ -26,6 +27,7 @@ class MainController:
                     'student': student,
                     'statistics': student_stats
                 })
+            
             return render_template('index.html', students_with_means=students_with_means)
     
     def get_blueprint(self):
