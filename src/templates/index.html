@@ -76,16 +76,16 @@
     {% elif current_user.is_parent() %}
         <div class="role-specific-section">
             <h2><i class="fas fa-users"></i> Мои дети</h2>
-            {% if students %}
+            {% if students_with_means %}
                 <div class="students-grid">
-                    {% for student in students %}
+                    {% for student_data in students_with_means %}
                     <div class="student-card">
                         <div class="student-avatar">
                             <i class="fas fa-user"></i>
                         </div>
                         <div class="student-info">
-                            <h3>{{ student.name }}</h3>
-                            <p class="student-class">{{ student.class_name }}</p>
+                            <h3>{{ student_data.name }}</h3>
+                            <p class="student-class">{{ student_data.class_name }}</p>
                             <a href="{{ url_for('students.student_diary', student_id=student.id) }}" class="btn btn-primary">
                                 <i class="fas fa-book-open"></i> Открыть дневник
                             </a>
