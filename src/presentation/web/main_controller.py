@@ -9,6 +9,28 @@ class MainController:
         self.bp = Blueprint('main', __name__)
         self._register_routes()
     
+    def _calculate_student_statistics(self, student_id: int, current_user):
+        grades = self.student_service.get_student_grades(student_id)  
+        
+        if not grades:
+            return {
+                'mean_grade': 0,
+                'median_grade': 0,
+                'total_grades': 0,
+                'grade_distribution': {}    
+            }
+        
+        grade_values = [grade.grade for grade in grades]
+        total = sum(grade_values)
+        mean_grade = round(total / len(grade_values), 2)
+        
+        return {
+            'mean_grade': mean_grade,
+            'median_grade': 0,  
+            'total_grades': len(grades),
+            'grade_distribution': {}
+        }
+    
     def _register_routes(self):
         
         @self.bp.route('/')
@@ -21,11 +43,7 @@ class MainController:
             
             students_with_means = []
             for student in students:
-                student_stats = self.student_service.calculate_student_statistics(student.id, current_user)
-                
-                print(f"DEBUG student {student.id} ({student.name}): stats={student_stats}")
-                if student_stats:
-                    print(f"DEBUG: total_grades = {student_stats.get('total_grades')}")
+                student_stats = self._calculate_student_statistics(student.id, current_user)
                 
                 students_with_means.append({
                     'student': student,
