@@ -130,8 +130,21 @@
                             <p class="student-class">{{ student.class_name }}</p>
 
                             <div class="average-grade-section">
-                                <div class="no-grades">Нет оценок</div>
-                            </div>
+                                {% if students_statistics and students_statistics.get(student.id) %} 
+                                {% set stats = students_statistics[student.id] %} 
+                                {% if stats.total_grades > 0 %} 
+                                    <div class="average-grade"> 
+                                        <span class="label">Средний балл:</span> 
+                                        <span class="value">{{ "%.2f"|format(stats.mean_grade) }}</span> 
+                                    </div> 
+                                {% else %} 
+                                    <div class="no-grades">Нет оценок</div> 
+                                {% endif %} 
+                            {% else %} 
+                                <div class="no-grades">Нет оценок</div> 
+                            {% endif %} 
+                        </div>
+
 
                             <a href="{{ url_for('students.student_diary', student_id=student.id) }}" class="btn btn-primary">
                                 <i class="fas fa-book-open"></i> Открыть дневник
@@ -173,7 +186,19 @@
                             <p class="student-class">{{ student.class_name }}</p>
                             
                             <div class="average-grade-section">
-                                <div class="no-grades">Нет оценок</div>
+                                {% if students_statistics and students_statistics.get(student.id) %} 
+                                    {% set stats = students_statistics[student.id] %} 
+                                    {% if stats.total_grades > 0 %} 
+                                        <div class="average-grade"> 
+                                            <span class="label">Средний балл:</span> 
+                                            <span class="value">{{ "%.2f"|format(stats.mean_grade) }}</span> 
+                                        </div> 
+                                    {% else %} 
+                                        <div class="no-grades">Нет оценок</div> 
+                                    {% endif %} 
+                                {% else %} 
+                                    <div class="no-grades">Нет оценок</div> 
+                                {% endif %} 
                             </div>
                             
                             <a href="{{ url_for('students.student_diary', student_id=student.id) }}" class="btn btn-primary">

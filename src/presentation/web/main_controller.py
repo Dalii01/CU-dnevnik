@@ -19,8 +19,12 @@ class MainController:
             
             students = self.student_service.get_all_students(current_user)
             
-            # Просто передаем студентов без статистики
-            return render_template('index.html', students=students)
+            students_statistics = {} 
+            for student in students: 
+                statistics = self.student_service.calculate_student_statistics(student.id, current_user) 
+                students_statistics[student.id] = statistics 
+                
+            return render_template('index.html', students=students, students_statistics=students_statistics)
     
     def get_blueprint(self):
         return self.bp
