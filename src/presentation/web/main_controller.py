@@ -19,10 +19,10 @@ class MainController:
             
             students = self.student_service.get_all_students(current_user)
             
-            # Добавляем статистику для каждого студента
             students_with_means = []
             for student in students:
-                student_stats = self.student_service.calculate_student_statistics(student.id, current_user)
+                data = self.student_service.get_student_diary_data(student.id, current_user)
+                student_stats = data.get('statistics') if data else None
                 students_with_means.append({
                     'student': student,
                     'statistics': student_stats
