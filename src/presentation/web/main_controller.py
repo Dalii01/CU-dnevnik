@@ -22,7 +22,17 @@ class MainController:
             students_with_means = []
             for student in students:
                 data = self.student_service.get_student_diary_data(student.id, current_user)
+                
+                print(f"DEBUG student {student.id} ({student.name}): data={data is not None}")
+                if data:
+                    print(f"DEBUG: statistics key exists = {'statistics' in data}")
+                    if 'statistics' in data:
+                        print(f"DEBUG: total_grades = {data['statistics'].get('total_grades')}")
+                    else:
+                        print(f"DEBUG: available keys = {list(data.keys())}")
+                
                 student_stats = data.get('statistics') if data else None
+                
                 students_with_means.append({
                     'student': student,
                     'statistics': student_stats
