@@ -16,32 +16,11 @@ class MainController:
             from flask_login import current_user
             if not current_user.is_authenticated:
                 return redirect(url_for('auth.login'))
-    
+            
             students = self.student_service.get_all_students(current_user)
+            
+            # Просто передаем студентов без статистики
+            return render_template('index.html', students=students)
     
-            students_with_means = []
-            for student in students:
-
-                data = self.student_service.get_student_diary_data(student.id, current_user)
-        
-                print(f"=== DEBUG STUDENT {student.id} ===")
-                print(f"Data type: {type(data)}")
-                if data:
-                    print(f"Data keys: {list(data.keys())}")
-                    if 'statistics' in data:
-                        student_stats = data['statistics']
-                        print(f"Statistics: {student_stats}")
-                    else:
-                        student_stats = None
-                else:
-                    student_stats = None
-                    print("Data is None or empty")
-        
-                students_with_means.append({
-                    'student': student,
-                    'statistics': student_stats
-                })
-    
-            return render_template('index.html', students_with_means=students_with_means)
     def get_blueprint(self):
         return self.bp
