@@ -67,13 +67,16 @@ class StudentService:
         # Добавляем объект предмета к каждому элементу расписания
         for sched in schedule:
             sched.subject = subjects_dict.get(sched.subject_id)
+
+            statistics = self.calculate_student_statistics(student_id, current_user)
         
         return {
             'student': student,
             'grades': grades,
             'attendance': attendance,
             'schedule': schedule,
-            'subjects': subjects
+            'subjects': subjects,
+            'statistics': statistics
         }
     
     def calculate_student_statistics(self, student_id: int, current_user) -> dict[str, Any] | None:
