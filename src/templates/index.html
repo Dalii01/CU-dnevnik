@@ -113,7 +113,7 @@
     {% elif current_user.is_teacher() %}
         <div class="role-specific-section">
             <h2><i class="fas fa-chalkboard-teacher"></i> Мои ученики</h2>
-            {% if students %}
+            {% if students_with_means %}
                 <div class="students-grid">
                     {% for student_data in students_with_means %}
                     <div class="student-card">
