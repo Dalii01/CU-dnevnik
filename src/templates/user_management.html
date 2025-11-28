@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container">
-    <!-- Хедер как в главной странице -->
+    <!-- Хедер -->
     <div class="diary-header">
         <div class="student-info">
             <div class="header-content">
@@ -53,23 +53,23 @@
         </div>
     </div>
 
-    <!-- Фильтры и поиск -->
-    <div class="filters-section">
-        <div class="search-box">
-            <i class="fas fa-search"></i>
-            <input type="text" placeholder="Поиск по имени или email...">
-        </div>
-        <div class="status-filter">
-            <select class="form-select">
-                <option>Все статусы</option>
-                <option>Активные</option>
-                <option>Заблокированные</option>
-            </select>
-        </div>
-    </div>
-
-    <!-- Таблица пользователей -->
+    <!-- Таблица с фильтрами ВНУТРИ как в фигме -->
     <div class="table-container">
+        <!-- Фильтры внутри карточки таблицы -->
+        <div class="table-filters">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Поиск по имени или email...">
+            </div>
+            <div class="status-filter">
+                <select class="form-select">
+                    <option>Все статусы</option>
+                    <option>Активные</option>
+                    <option>Заблокированные</option>
+                </select>
+            </div>
+        </div>
+
         <table class="users-table">
             <thead>
                 <tr>
@@ -106,29 +106,13 @@
                     <td><span class="status-badge status-blocked">Заблокирован</span></td>
                     <td><button class="btn btn-success">Активировать</button></td>
                 </tr>
-                <tr>
-                    <td>Козлова</td>
-                    <td>Анна</td>
-                    <td>kozlova.a@school.ru</td>
-                    <td>11В</td>
-                    <td><span class="status-badge status-active">Активен</span></td>
-                    <td><button class="btn btn-warning">Заблокировать</button></td>
-                </tr>
-                <tr>
-                    <td>Морозов</td>
-                    <td>Игорь</td>
-                    <td>morozov.i@school.ru</td>
-                    <td>10A</td>
-                    <td><span class="status-badge status-active">Активен</span></td>
-                    <td><button class="btn btn-warning">Заблокировать</button></td>
-                </tr>
             </tbody>
         </table>
-    </div>
 
-    <!-- Подпись таблицы -->
-    <div class="table-footer">
-        Показано 5 из 8 учеников
+        <!-- Подпись таблицы -->
+        <div class="table-footer">
+            Показано 3 из 8 учеников
+        </div>
     </div>
 </div>
 {% endblock %}
