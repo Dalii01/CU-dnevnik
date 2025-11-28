@@ -53,15 +53,24 @@
         </div>
     </div>
 
-    <!-- Таблица с фильтрами ВНУТРИ как в фигме -->
+    <!-- Таблица с фильтрами -->
     <div class="table-container">
-        <!-- Фильтры внутри карточки таблицы -->
+        <!-- Заголовок блока таблицы -->
+        <div class="table-header">
+            <div>
+                <h2 class="table-title">Список учащихся</h2>
+                <p class="table-subtitle">Управляйте статусами и доступом учащихся</p>
+            </div>
+        </div>
+
+        <!-- Фильтры -->
         <div class="table-filters">
             <div class="search-box">
                 <i class="fas fa-search"></i>
                 <input type="text" placeholder="Поиск по имени или email...">
             </div>
             <div class="status-filter">
+                <label class="filter-label">Статус</label>
                 <select class="form-select">
                     <option>Все статусы</option>
                     <option>Активные</option>
@@ -70,44 +79,53 @@
             </div>
         </div>
 
-        <table class="users-table">
-            <thead>
-                <tr>
-                    <th>Фамилия</th>
-                    <th>Имя</th>
-                    <th>Email</th>
-                    <th>Класс</th>
-                    <th>Статус</th>
-                    <th>Действия</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Иванов</td>
-                    <td>Алексей</td>
-                    <td>ivanov.a@school.ru</td>
-                    <td>10A</td>
-                    <td><span class="status-badge status-active">Активен</span></td>
-                    <td><button class="btn btn-warning">Заблокировать</button></td>
-                </tr>
-                <tr>
-                    <td>Петрова</td>
-                    <td>Мария</td>
-                    <td>petrova.m@school.ru</td>
-                    <td>10A</td>
-                    <td><span class="status-badge status-active">Активен</span></td>
-                    <td><button class="btn btn-warning">Заблокировать</button></td>
-                </tr>
-                <tr>
-                    <td>Сидоров</td>
-                    <td>Дмитрий</td>
-                    <td>sidorov.d@school.ru</td>
-                    <td>9Б</td>
-                    <td><span class="status-badge status-blocked">Заблокирован</span></td>
-                    <td><button class="btn btn-success">Активировать</button></td>
-                </tr>
-            </tbody>
-        </table>
+        <!-- Таблица -->
+        <div class="table-wrapper">
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Фамилия</th>
+                        <th>Имя</th>
+                        <th>Email</th>
+                        <th>Класс</th>
+                        <th>Статус</th>
+                        <th class="col-actions">Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Иванов</td>
+                        <td>Алексей</td>
+                        <td>ivanov.a@school.ru</td>
+                        <td>10A</td>
+                        <td><span class="status-badge status-active">Активен</span></td>
+                        <td class="col-actions">
+                            <button class="btn-table btn-warning">Заблокировать</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Петрова</td>
+                        <td>Мария</td>
+                        <td>petrova.m@school.ru</td>
+                        <td>10A</td>
+                        <td><span class="status-badge status-active">Активен</span></td>
+                        <td class="col-actions">
+                            <button class="btn-table btn-warning">Заблокировать</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Сидоров</td>
+                        <td>Дмитрий</td>
+                        <td>sidorov.d@school.ru</td>
+                        <td>9Б</td>
+                        <td><span class="status-badge status-blocked">Заблокирован</span></td>
+                        <td class="col-actions">
+                            <button class="btn-table btn-success">Активировать</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
         <!-- Подпись таблицы -->
         <div class="table-footer">
