@@ -17,12 +17,14 @@ from infrastructure.repositories.schedule_repository import ScheduleRepository
 # Application Services
 from application.services.auth_service import AuthService
 from application.services.student_service import StudentService
+from application.services.admin_user_service import AdminUserService
 
 # Controllers
 from presentation.web.main_controller import MainController
 from presentation.web.student_controller import StudentController
 from presentation.web.auth_controller import AuthController
 from presentation.web.reports_controller import ReportsController
+from presentation.web.admin_controller import AdminController
 
 # Domain entities
 from domain.entities.user import User
@@ -104,13 +106,19 @@ class CleanArchitectureApp:
             self.repositories['subject'],
             self.services['auth']
         )
+
+        self.services['admin_user'] = AdminUserService(
+            self.repositories['user']
+        )
     
     def _init_controllers(self):
         self.controllers = {
             'main': MainController(self.services['student']),
             'student': StudentController(self.services['student']),
             'auth': AuthController(self.services['auth']),
-            'reports': ReportsController(self.services['student'])
+            'reports': ReportsController(self.services['student']),
+            'admin': AdminController(self.services['admin_user'])
+
         }
     
     def _init_login_manager(self):
@@ -133,6 +141,7 @@ class CleanArchitectureApp:
         self.app.register_blueprint(self.controllers['student'].get_blueprint(), url_prefix='/student')
         self.app.register_blueprint(self.controllers['auth'].get_blueprint(), url_prefix='/auth')
         self.app.register_blueprint(self.controllers['reports'].get_blueprint(), url_prefix='/reports')
+        self.app.register_blueprint(self.controllers['admin'].get_blueprint(), url_prefix='/admin')
 
 
 def create_app():

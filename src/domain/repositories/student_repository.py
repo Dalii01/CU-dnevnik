@@ -9,3 +9,6 @@ class IStudentRepository(BaseRepository[Student]):
     
     def get_by_user_id(self, user_id: int) -> Student | None:
         raise NotImplementedError
+    
+    def get_all(self) -> list[Student]:  
+        raise NotImplementedError

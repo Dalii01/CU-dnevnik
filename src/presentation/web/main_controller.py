@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for
+from flask_login import login_required, current_user
 from application.services.student_service import StudentService
 
 
@@ -25,6 +26,12 @@ class MainController:
                 students_statistics[student.id] = statistics 
                 
             return render_template('index.html', students=students, students_statistics=students_statistics)
+        
+        @self.bp.route('/admin/users')
+        @login_required
+        def admin_user_management():
+            # Временный маршрут для управления пользователями
+            return render_template('user_management.html')
     
     def get_blueprint(self):
         return self.bp
