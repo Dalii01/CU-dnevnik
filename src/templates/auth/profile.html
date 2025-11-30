@@ -14,8 +14,11 @@
                 <div class="profile-avatar">
                     <i class="fas fa-user-circle"></i>
                 </div>
+                {% set display_name = user.student_profile.name
+                    if user.is_student() and user.student_profile
+                    else user.get_full_name() %}
                 <div class="profile-info">
-                    <h2>{{ user.get_full_name() }}</h2>
+                    <h2>{{ display_name }}</h2>
                     <p class="profile-role">
                         <i class="fas fa-{% if user.is_student() %}graduation-cap{% elif user.is_parent() %}users{% elif user.is_teacher() %}chalkboard-teacher{% else %}crown{% endif %}"></i>
                         {{ user.role.value|title }}
