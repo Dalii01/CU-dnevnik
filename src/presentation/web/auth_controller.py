@@ -18,14 +18,14 @@ class AuthController:
         def login():
             form = LoginForm()
             if form.validate_on_submit():
-                user = self.auth_service.authenticate_user(form.username.data, form.password.data)
+                user, error = self.auth_service.authenticate_user(form.username.data, form.password.data)
                 if user:
                     from flask_login import login_user
                     login_user(user, remember=form.remember_me.data)
                     flash('Вы успешно вошли в систему!', 'success')
                     return redirect(url_for('main.index'))
                 else:
-                    flash('Неверное имя пользователя или пароль', 'error')
+                    flash(error, 'error')
             
             return render_template('auth/login.html', form=form)
 

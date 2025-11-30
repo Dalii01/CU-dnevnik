@@ -20,3 +20,6 @@
 
 /* Стили для профиля */
 @import url('modules/profile.css');
+
+/* Стили для админских страниц */
+@import url('modules/admin.css');
