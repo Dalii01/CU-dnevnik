@@ -17,7 +17,7 @@ class AdminController:
             if not current_user.is_admin:
                 return "Доступ запрещен", 403
     
-            # 🔴 ВРЕМЕННАЯ ЗАГЛУШКА — проверяем, что код исполняется
+            # ВРЕМЕННАЯ ЗАГЛУШКА — проверяем, что код исполняется
             return "<h1 style='color:red'>✅ ДА! Контроллер работает!</h1>"
     
     def get_blueprint(self):
