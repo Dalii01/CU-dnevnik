@@ -120,7 +120,9 @@ class CleanArchitectureApp:
             'admin': AdminController(self.services['admin_user'])
 
         }
-    
+        # КОНТРОЛЛЕР СОЗДАН
+        print("✅ AdminController создан:", self.controllers.get('admin'))
+
     def _init_login_manager(self):
         self.login_manager.init_app(self.app)
         self.login_manager.login_view = 'auth.login'
