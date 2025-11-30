@@ -14,9 +14,6 @@ class AdminController:
         @self.bp.route('/users')
         @login_required
         def admin_users():
-            if not current_user.is_admin:
-                return "Доступ запрещен", 403
-    
             # ВРЕМЕННАЯ ЗАГЛУШКА — проверяем, что код исполняется
             return "<h1 style='color:red'>✅ ДА! Контроллер работает!</h1>"
     
