@@ -28,9 +28,10 @@
       "username": "student1",
       "email": "student1@school.ru",
       "first_name": "Иван",
-      "last_name": "Иванов",
+      "last_name": "Петров",
       "password": "student123",
-      "role": "student"
+      "role": "student",
+      "telegram_id": "@ivan_student"
     },
     {
       "username": "student2",
@@ -38,7 +39,8 @@
       "first_name": "Мария",
       "last_name": "Сидорова",
       "password": "student123",
-      "role": "student"
+      "role": "student",
+      "telegram_id": "987654321"
     },
     {
       "username": "student3",

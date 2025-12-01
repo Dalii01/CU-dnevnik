@@ -11,23 +11,26 @@ from domain.repositories.attendance_repository import IAttendanceRepository
 from domain.repositories.schedule_repository import IScheduleRepository
 from domain.repositories.subject_repository import ISubjectRepository
 from application.services.auth_service import AuthService
+from application.services.telegram_service import TelegramService
 
 
 class StudentService:
     
-    def __init__(self, 
+    def __init__(self,
                  student_repo: IStudentRepository,
                  grade_repo: IGradeRepository,
                  attendance_repo: IAttendanceRepository,
                  schedule_repo: IScheduleRepository,
                  subject_repo: ISubjectRepository,
-                 auth_service: AuthService):
+                 auth_service: AuthService,
+                 telegram_service: TelegramService = None):
         self.student_repo = student_repo
         self.grade_repo = grade_repo
         self.attendance_repo = attendance_repo
         self.schedule_repo = schedule_repo
         self.subject_repo = subject_repo
         self.auth_service = auth_service
+        self.telegram_service = telegram_service or TelegramService()
     
     def get_all_students(self, current_user) -> list[Student]:
         if not current_user or not hasattr(current_user, 'id'):
@@ -119,14 +122,14 @@ class StudentService:
             'grade_distribution': grade_distribution
         }
     
-    def add_grade(self, student_id: int, subject_id: int, grade: int, 
+    def add_grade(self, student_id: int, subject_id: int, grade: int,
                   comment: str, current_user) -> Grade | None:
         if not current_user or not hasattr(current_user, 'id'):
             return None
-            
+
         if not self.auth_service.can_edit_student_data(current_user, student_id):
             return None
-            
+
         new_grade = Grade(
             id=None,
             student_id=student_id,
@@ -135,8 +138,40 @@ class StudentService:
             date=date.today(),
             comment=comment
         )
-        
-        return self.grade_repo.create(new_grade)
+
+        created_grade = self.grade_repo.create(new_grade)
+
+        # Отправляем уведомление в Telegram если оценка создана успешно
+        if created_grade:
+            self._send_grade_notification(created_grade)
+
+        return created_grade
+
+    def _send_grade_notification(self, grade: Grade) -> None:
+        try:
+            # Получаем студента и связанного с ним пользователя
+            student = self.student_repo.get_by_id(grade.student_id)
+            if not student or not student.user_id:
+                return
+
+            # Получаем пользователя из репозитория auth_service
+            user = self.auth_service.user_repo.get_by_id(student.user_id)
+            if not user:
+                return
+
+            if not user.telegram_id:
+                return
+
+            # Получаем предмет
+            subject = self.subject_repo.get_by_id(grade.subject_id)
+            if not subject:
+                return
+
+            # Отправляем уведомление
+            self.telegram_service.send_grade_notification(user, grade, subject)
+
+        except Exception as e:
+            print(f"❌ Ошибка при отправке уведомления о оценке: {e}")
     
     def add_attendance(self, student_id: int, subject_id: int, present: bool, 
                       reason: str, current_user) -> Attendance | None:

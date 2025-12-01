@@ -32,14 +32,18 @@ class DatabaseConnection:
     
     def execute_query(self, query: str, params: tuple = ()) -> list:
         with self.get_connection() as conn:
-            cursor = conn.execute(query, params)
-            return cursor.fetchall()
+            query_executor = conn.execute(query, params)
+            return query_executor.fetchall()
     
     def execute_update(self, query: str, params: tuple = ()) -> int:
         with self.get_connection() as conn:
-            cursor = conn.execute(query, params)
+            query_executor = conn.execute(query, params)
             conn.commit()
-            return cursor.lastrowid
+            # Для INSERT возвращаем lastrowid, для UPDATE возвращаем rowcount
+            if query.strip().upper().startswith('INSERT'):
+                return query_executor.lastrowid
+            else:
+                return query_executor.rowcount
     
     def execute_many(self, query: str, params_list: list) -> None:
         with self.get_connection() as conn:

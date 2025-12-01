@@ -36,6 +36,20 @@ class RegisterForm(FlaskForm):
 class ChangePasswordForm(FlaskForm):
     current_password = PasswordField('Текущий пароль', validators=[DataRequired()])
     new_password = PasswordField('Новый пароль', validators=[DataRequired(), Length(min=6)])
-    new_password2 = PasswordField('Подтвердите новый пароль', 
+    new_password2 = PasswordField('Подтвердите новый пароль',
                                  validators=[DataRequired(), EqualTo('new_password', message='Пароли должны совпадать')])
     submit = SubmitField('Изменить пароль')
+
+
+class UpdateTelegramForm(FlaskForm):
+    telegram_id = StringField('Telegram ID',
+                             validators=[Length(max=50)],
+                             render_kw={"placeholder": "Например: @username или 123456789"})
+    submit = SubmitField('Сохранить')
+
+    def validate_telegram_id(self, telegram_id):
+        from application.services.telegram_service import TelegramService
+        telegram_service = TelegramService()
+
+        if telegram_id.data and not telegram_service.validate_telegram_id(telegram_id.data):
+            raise ValidationError('Неверный формат Telegram ID. Используйте @username или числовой ID.')

@@ -1,14 +1,16 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from flask_login import login_required
+from flask_login import login_required, current_user
 from application.services.auth_service import AuthService
 from domain.entities.user import UserRole
-from presentation.forms.auth_forms import LoginForm, RegisterForm, ChangePasswordForm
+from presentation.forms.auth_forms import LoginForm, RegisterForm, ChangePasswordForm, UpdateTelegramForm
+from infrastructure.repositories.user_repository import UserRepository
 
 
 class AuthController:
-    
-    def __init__(self, auth_service: AuthService):
+
+    def __init__(self, auth_service: AuthService, user_repo: UserRepository):
         self.auth_service = auth_service
+        self.user_repo = user_repo
         self.bp = Blueprint('auth', __name__)
         self._register_routes()
     
@@ -81,6 +83,27 @@ class AuthController:
         def setup_relationships():
             from flask_login import current_user
             return render_template('auth/setup_relationships.html', user=current_user)
-    
+
+        @self.bp.route('/update_telegram', methods=['GET', 'POST'])
+        @login_required
+        def update_telegram():
+            form = UpdateTelegramForm()
+
+            if form.validate_on_submit():
+                current_user.telegram_id = form.telegram_id.data.strip() if form.telegram_id.data else None
+
+                try:
+                    self.user_repo.update(current_user)
+                    flash('Telegram ID успешно обновлен!', 'success')
+                    return redirect(url_for('auth.profile'))
+                except Exception as e:
+                    flash(f'Ошибка при обновлении Telegram ID: {str(e)}', 'error')
+
+            # Предзаполняем форму текущим значением
+            if current_user.telegram_id:
+                form.telegram_id.data = current_user.telegram_id
+
+            return render_template('auth/update_telegram.html', form=form, user=current_user)
+
     def get_blueprint(self):
         return self.bp

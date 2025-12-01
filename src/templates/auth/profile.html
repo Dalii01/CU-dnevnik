@@ -30,6 +30,10 @@
                     <span>{{ user.email }}</span>
                 </div>
                 <div class="detail-item">
+                    <label>Telegram ID:</label>
+                    <span>{% if user.telegram_id %}{{ user.telegram_id }}{% else %}Не указан{% endif %}</span>
+                </div>
+                <div class="detail-item">
                     <label>Дата регистрации:</label>
                     <span>{{ user.created_at.strftime('%d.%m.%Y') }}</span>
                 </div>
@@ -44,6 +48,9 @@
             <div class="profile-actions">
                 <a href="{{ url_for('auth.change_password') }}" class="btn btn-secondary">
                     <i class="fas fa-key"></i> Изменить пароль
+                </a>
+                <a href="{{ url_for('auth.update_telegram') }}" class="btn btn-primary">
+                    <i class="fab fa-telegram"></i> Telegram ID
                 </a>
                 {% if user.is_parent() or user.is_teacher() %}
                     <a href="{{ url_for('auth.setup_relationships') }}" class="btn btn-info">

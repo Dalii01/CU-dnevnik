@@ -58,6 +58,6 @@ class AdminController:
                 flash(message, 'error')
 
             return redirect(url_for('admin.admin_users'))
-    
+
     def get_blueprint(self):
         return self.bp
