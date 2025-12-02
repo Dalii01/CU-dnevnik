@@ -198,11 +198,9 @@
 - `src/application/services/analytics_service.py` — сервис аналитики
 - `src/presentation/web/analytics_controller.py` — контроллер лидерборда
 - `src/presentation/web/reports_controller.py` — контроллер отчётов
-- `src/templates/analytics/leaderboard.html` — страница лидерборда
+- `src/templates/analytics/leaderboard.html` — страница лидерборда (с inline стилями и скриптом)
 - `src/templates/reports.html` — страница отчётов
-- `src/static/css/modules/leaderboard.css` — стили лидерборда
 - `src/static/css/modules/reports.css` — стили отчётов
-- `src/static/js/leaderboard.js` — скрипт для прокрутки к текущему ученику
 
 **Обновлённые файлы:**
 - `src/run.py` — регистрация новых контроллеров
