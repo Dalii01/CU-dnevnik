@@ -17,61 +17,34 @@ body {
     padding: 20px;
 }
 
-/* Хедер (не трогаем) */
+/* Хедер - как на главной странице (без белого фона) */
 .diary-header {
-    background: white;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    margin-bottom: 25px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.header-content {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.header-icon {
-    color: #667eea;
-    font-size: 28px;
+    text-align: center;
+    margin: 3rem 0;
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
 }
 
 .diary-header h1 {
-    color: #333;
-    font-size: 28px;
-    font-weight: 600;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #141414;
+    font-weight: 700;
 }
 
-.student-class {
-    color: #6c757d;
-    font-size: 14px;
+.diary-header h1 i {
+    color: #141414;
+    margin-right: 12px;
 }
 
-.diary-nav .btn {
-    background: linear-gradient(135deg, #7b5dff, #8b74ff);
-    color: #fff;
-    border: none;
-    padding: 12px 28px;
-    border-radius: 10px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 10px 20px rgba(123, 93, 255, 0.25);
-}
-
-.diary-nav .btn:hover {
-    transform: translateY(-2px) scale(1.01);
-    box-shadow: 0 12px 26px rgba(123, 93, 255, 0.35);
+.diary-header p {
+    font-size: 1.2rem;
+    color: #6D6D6D;
+    font-weight: 400;
+    margin: 0;
 }
 
 /* Карточки статистики */
@@ -124,14 +97,17 @@ body {
 }
 
 .stat-label {
-    color: #6c757d;
-    font-size: 14px;
+    color: #141414;
+    font-size: 0.9rem;
+    font-weight: 500;
     margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .stat-number {
-    color: #333;
-    font-size: 24px;
+    color: #141414;
+    font-size: 2rem;
     font-weight: 600;
 }
 
@@ -227,18 +203,19 @@ body {
 .users-table thead th {
     padding: 12px 15px;
     text-align: left;
-    color: #495057;
+    color: #141414;
     font-weight: 600;
-    font-size: 14px;
-    background: #f8f9fa; /* Светло-серый фон для заголовков */
-    border-bottom: 2px solid #dee2e6; /* Толстая нижняя граница */
+    font-size: 1rem;
+    background: #F6F6F6;
+    border-bottom: 2px solid #E6E6E6;
 }
 
 .users-table tbody td {
     padding: 12px 15px;
-    border-bottom: 1px solid #dee2e6;
-    color: #495057;
-    font-size: 14px;
+    border-bottom: 1px solid #E6E6E6;
+    color: #141414;
+    font-size: 1rem;
+    font-weight: 400;
     vertical-align: middle;
 }
 
@@ -311,8 +288,9 @@ body {
 /* Подпись таблицы */
 .table-footer {
     margin-top: 15px;
-    color: #6c757d;
-    font-size: 13px;
+    color: #6D6D6D;
+    font-size: 0.9rem;
+    font-weight: 400;
     text-align: left;
 }
 
