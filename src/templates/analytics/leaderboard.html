@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Рейтинг класса{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/modules/leaderboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Заголовок страницы -->
+    <div class="page-header">
+        <h1><i class="fas fa-trophy"></i> Рейтинг класса {{ class_name }}</h1>
+        <p>Рейтинг учеников по успеваемости</p>
+    </div>
+
+    <!-- Фильтры -->
+    {% if can_filter %}
+    <div class="filters-card">
+        <form method="GET" action="{{ url_for('analytics.leaderboard') }}" class="filter-form">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label for="class">Класс</label>
+                    <select name="class" id="class" onchange="this.form.submit()">
+                        {% for cls in all_classes %}
+                        <option value="{{ cls }}" {{ 'selected' if cls == class_name else '' }}>{{ cls }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="subject">Предмет</label>
+                    <select name="subject" id="subject" onchange="this.form.submit()">
+                        <option value="">Все предметы</option>
+                        {% for subject in all_subjects %}
+                        <option value="{{ subject.id }}" {{ 'selected' if subject.id == selected_subject else '' }}>
+                            {{ subject.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+
+    <!-- Таблица лидерборда -->
+    <div class="leaderboard-table">
+        <table>
+            <colgroup>
+                <col style="width: 100px;">
+                <col style="width: auto;">
+                <col style="width: 180px;">
+                <col style="width: 180px;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>Место</th>
+                    <th>Студент</th>
+                    <th>Средний балл</th>
+                    <th>Всего оценок</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in leaderboard %}
+                <tr class="{{ 'current-student' if entry.student.id == current_student_id else '' }}">
+                    <td class="rank">
+                        <span class="rank-number rank-{{ entry.rank }}">{{ entry.rank }}</span>
+                    </td>
+                    <td class="student-name">
+                        {{ entry.student.name }}
+                        {% if entry.student.id == current_student_id %}
+                        <span class="badge-you">← ВЫ</span>
+                        {% endif %}
+                    </td>
+                    <td class="avg-grade">
+                        <span class="grade-badge grade-{{ entry.avg_grade|round|int }}">
+                            {{ entry.avg_grade }}
+                        </span>
+                    </td>
+                    <td class="total-grades">{{ entry.total_grades }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/leaderboard.js') }}"></script>
+{% endblock %}

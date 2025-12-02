@@ -18,6 +18,7 @@ from infrastructure.repositories.schedule_repository import ScheduleRepository
 from application.services.auth_service import AuthService
 from application.services.student_service import StudentService
 from application.services.admin_user_service import AdminUserService
+from application.services.analytics_service import AnalyticsService
 
 # Controllers
 from presentation.web.main_controller import MainController
@@ -25,6 +26,7 @@ from presentation.web.student_controller import StudentController
 from presentation.web.auth_controller import AuthController
 from presentation.web.reports_controller import ReportsController
 from presentation.web.admin_controller import AdminController
+from presentation.web.analytics_controller import AnalyticsController
 
 # Domain entities
 from domain.entities.user import User
@@ -41,32 +43,19 @@ class CleanArchitectureApp:
         self.login_manager = LoginManager()
     
     def create_app(self):
-        # Получаем путь к корневой папке проекта
         basedir = os.path.abspath(os.path.dirname(__file__))
         
         self.app = Flask(__name__, 
                         template_folder=os.path.join(basedir, 'templates'),
                         static_folder=os.path.join(basedir, 'static'))
         
-        # Конфигурация
         self.app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or 'your-secret-key-here'
         
-        # Инициализация базы данных
-        self._init_database()
-        
-        # Инициализация репозиториев
+        self._init_database()        
         self._init_repositories()
-        
-        # Инициализация сервисов
         self._init_services()
-        
-        # Инициализация контроллеров
-        self._init_controllers()
-        
-        # Настройка Flask-Login
+        self._init_controllers() 
         self._init_login_manager()
-        
-        # Регистрация маршрутов
         self._register_blueprints()
         
         return self.app
@@ -97,7 +86,6 @@ class CleanArchitectureApp:
             ),
         }
         
-        # Student service зависит от auth service
         self.services['student'] = StudentService(
             self.repositories['student'],
             self.repositories['grade'],
@@ -110,18 +98,26 @@ class CleanArchitectureApp:
         self.services['admin_user'] = AdminUserService(
             self.repositories['user']
         )
+        
+        # Analytics service
+        self.services['analytics'] = AnalyticsService(
+            self.repositories['student'],
+            self.repositories['grade'],
+            self.repositories['attendance'],
+            self.repositories['subject']
+        )
     
     def _init_controllers(self):
         self.controllers = {
             'main': MainController(self.services['student']),
-            'student': StudentController(self.services['student']),
+            'student': StudentController(self.services['student'], self.services['analytics']),
             'auth': AuthController(self.services['auth']),
             'reports': ReportsController(self.services['student']),
-            'admin': AdminController(self.services['admin_user'])
-
+            'admin': AdminController(self.services['admin_user']),
+            'analytics': AnalyticsController(self.services['analytics'], self.services['student'])
         }
         # КОНТРОЛЛЕР СОЗДАН
-        print("✅ AdminController создан:", self.controllers.get('admin'))
+        print("AdminController создан:", self.controllers.get('admin'))
 
     def _init_login_manager(self):
         self.login_manager.init_app(self.app)
@@ -133,7 +129,6 @@ class CleanArchitectureApp:
         def load_user(user_id):
             user = self.repositories['user'].get_by_id(int(user_id))
             if user and user.is_student():
-                # Загружаем профиль студента для пользователей с ролью student
                 student_profile = self.repositories['student'].get_by_user_id(user.id)
                 user.student_profile = student_profile
             return user
@@ -144,6 +139,7 @@ class CleanArchitectureApp:
         self.app.register_blueprint(self.controllers['auth'].get_blueprint(), url_prefix='/auth')
         self.app.register_blueprint(self.controllers['reports'].get_blueprint(), url_prefix='/reports')
         self.app.register_blueprint(self.controllers['admin'].get_blueprint(), url_prefix='/admin')
+        self.app.register_blueprint(self.controllers['analytics'].get_blueprint(), url_prefix='/analytics')
 
 
 def create_app():

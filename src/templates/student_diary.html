@@ -67,6 +67,24 @@
     </div>
     {% endif %}
 
+    <!-- Умные рекомендации -->
+    {% if recommendations %}
+    <div class="recommendations-section">
+        <h3><i class="fas fa-lightbulb"></i> Рекомендации и аналитика</h3>
+        <div class="recommendations-grid">
+            {% for rec in recommendations %}
+            <div class="recommendation-card recommendation-{{ rec.type }}">
+                <div class="rec-icon">{{ rec.icon }}</div>
+                <div class="rec-content">
+                    <h4>{{ rec.title }}</h4>
+                    <p>{{ rec.text }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
     <div class="diary-tabs">
         <a href="{{ url_for('students.student_diary', student_id=student.id, tab='grades') }}" 
            class="tab-btn {{ 'active' if request.args.get('tab', 'grades') == 'grades' else '' }}">

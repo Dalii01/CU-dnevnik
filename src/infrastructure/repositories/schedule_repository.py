@@ -45,6 +45,35 @@ class ScheduleRepository(IScheduleRepository):
         rows = self.db.execute_query(query, (subject_id,))
         return [self._row_to_schedule(row) for row in rows]
     
+    def get_filtered(self, day_of_week: int = None, subject_id: int = None,
+                    time_start: time = None) -> list[Schedule]:
+        # Начинаем с базового запроса
+        conditions = []
+        params = []
+        
+        # Добавляем условие фильтрации по дню недели
+        if day_of_week is not None:
+            conditions.append("day_of_week = ?")
+            params.append(day_of_week)
+        
+        # Добавляем условие фильтрации по предмету
+        if subject_id is not None:
+            conditions.append("subject_id = ?")
+            params.append(subject_id)
+        
+        # Добавляем условие фильтрации по времени начала
+        if time_start is not None:
+            conditions.append("time_start >= ?")
+            params.append(time_start.strftime('%H:%M'))
+        
+        # Формируем WHERE-часть запроса
+        where_clause = " WHERE " + " AND ".join(conditions) if conditions else ""
+        
+        # Выполняем запрос с динамическими условиями
+        query = f"SELECT * FROM schedule{where_clause} ORDER BY day_of_week, time_start"
+        rows = self.db.execute_query(query, params)
+        return [self._row_to_schedule(row) for row in rows]
+    
     def update(self, schedule: Schedule) -> Schedule:
         query = """
         UPDATE schedule 

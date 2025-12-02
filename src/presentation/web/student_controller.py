@@ -5,8 +5,9 @@ from application.services.student_service import StudentService
 
 class StudentController:
     
-    def __init__(self, student_service: StudentService):
+    def __init__(self, student_service: StudentService, analytics_service=None):
         self.student_service = student_service
+        self.analytics_service = analytics_service
         self.bp = Blueprint('students', __name__)
         self._register_routes()
     
@@ -21,6 +22,12 @@ class StudentController:
             if data is None:
                 flash('У вас нет прав для просмотра данных этого студента', 'error')
                 return redirect(url_for('main.index'))
+            
+            # Добавляем рекомендации, если есть analytics_service
+            if self.analytics_service:
+                recommendations = self.analytics_service.get_student_recommendations(student_id)
+                data['recommendations'] = recommendations
+            
             return render_template('student_diary.html', **data)
 
         @self.bp.route('/<int:student_id>/add_grade', methods=['POST'])
