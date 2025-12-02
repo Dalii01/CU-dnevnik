@@ -2,10 +2,6 @@
 
 {% block title %}Рейтинг класса{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/modules/leaderboard.css') }}">
-{% endblock %}
-
 {% block content %}
 <div class="container">
     <!-- Заголовок страницы -->
@@ -87,5 +83,381 @@
 
 </div>
 
-<script src="{{ url_for('static', filename='js/leaderboard.js') }}"></script>
+<style>
+/* Заголовок страницы - как на главной */
+.page-header {
+    text-align: center;
+    margin: 3rem 0;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #141414;
+    font-weight: 700;
+}
+
+.page-header h1 i {
+    color: #141414;
+    margin-right: 12px;
+}
+
+.page-header p {
+    font-size: 1.2rem;
+    color: #6D6D6D;
+    font-weight: 400;
+}
+
+/* Карточка фильтров */
+.filters-card {
+    background: white;
+    padding: 1.5rem 2rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 166, 81, 0.08);
+    border: 1px solid #E6E6E6;
+    margin-bottom: 1.5rem;
+}
+
+.filter-row {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-end;
+}
+
+.filter-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.filter-group label {
+    font-weight: 600;
+    color: #141414;
+    font-size: 1rem;
+}
+
+.filter-group select {
+    padding: 0.75rem 1rem;
+    border: 2px solid #E6E6E6;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: white;
+    color: #141414;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-group select:hover {
+    border-color: #00A651;
+}
+
+.filter-group select:focus {
+    outline: none;
+    border-color: #00A651;
+    box-shadow: 0 0 0 3px rgba(0, 166, 81, 0.1);
+}
+
+/* Таблица рейтинга */
+.leaderboard-table {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 166, 81, 0.08);
+    border: 1px solid #E6E6E6;
+    overflow: hidden;
+}
+
+.leaderboard-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.leaderboard-table thead {
+    background: #F6F6F6;
+    color: #141414;
+    border-bottom: 2px solid #E6E6E6;
+}
+
+.leaderboard-table th {
+    padding: 1rem;
+    font-weight: 600;
+    color: #141414;
+}
+
+.leaderboard-table th:nth-child(1),
+.leaderboard-table td:nth-child(1) {
+    text-align: center;
+}
+
+.leaderboard-table th:nth-child(2),
+.leaderboard-table td:nth-child(2) {
+    text-align: left;
+}
+
+.leaderboard-table th:nth-child(3),
+.leaderboard-table td:nth-child(3) {
+    text-align: center;
+}
+
+.leaderboard-table th:nth-child(4),
+.leaderboard-table td:nth-child(4) {
+    text-align: center;
+}
+
+.leaderboard-table tbody tr {
+    border-bottom: 1px solid #E6E6E6;
+    transition: all 0.3s ease;
+}
+
+.leaderboard-table tbody tr:hover {
+    background: #FAFAFA;
+}
+
+.leaderboard-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.leaderboard-table tbody tr.current-student {
+    background: #EDFFF5;
+}
+
+.leaderboard-table tbody tr.current-student:hover {
+    background: #D4FFEA;
+}
+
+.leaderboard-table td {
+    padding: 1rem;
+    vertical-align: middle;
+    color: #141414;
+}
+
+
+/* Номера мест */
+.rank-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.rank-1 {
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    color: #8b6914;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+}
+
+.rank-2 {
+    background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%);
+    color: #666;
+    box-shadow: 0 4px 15px rgba(192, 192, 192, 0.3);
+}
+
+.rank-3 {
+    background: linear-gradient(135deg, #cd7f32 0%, #e3a869 100%);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(205, 127, 50, 0.3);
+}
+
+.rank-number:not(.rank-1):not(.rank-2):not(.rank-3) {
+    background: #F6F6F6;
+    color: #6D6D6D;
+}
+
+/* Имя студента */
+.student-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #141414;
+}
+
+.badge-you {
+    background: linear-gradient(135deg, #00A651 0%, #02E570 100%);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 10px;
+}
+
+/* Бейджи оценок */
+.grade-badge {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.grade-5 {
+    background: #00A651;
+    color: white;
+}
+
+.grade-4 {
+    background: #2CB9FF;
+    color: white;
+}
+
+.grade-3 {
+    background: #ffc107;
+    color: #141414;
+}
+
+.grade-2 {
+    background: #FF662C;
+    color: white;
+}
+
+.total-grades {
+    color: #6D6D6D;
+    font-weight: 400;
+}
+
+/* Кнопка "Моё место" */
+.quick-actions {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+.quick-actions .btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    background: linear-gradient(135deg, #00A651 0%, #02E570 100%);
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.quick-actions .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 166, 81, 0.4);
+}
+
+/* Блок рекомендаций */
+.recommendations-section {
+    margin-top: 40px;
+    padding: 30px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 166, 81, 0.08);
+    border: 1px solid #E6E6E6;
+}
+
+.recommendations-section h2 {
+    margin: 0 0 25px 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #141414;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.recommendations-section h2 i {
+    color: #00A651;
+    font-size: 28px;
+}
+
+.recommendations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.recommendation-card {
+    display: flex;
+    gap: 16px;
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px solid;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.recommendation-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Предупреждение - оранжевый */
+.recommendation-warning {
+    background: #FFE5D4;
+    border-color: #FF662C;
+}
+
+/* Рекомендация - фиолетовый */
+.recommendation-recommendation {
+    background: #E8E4FF;
+    border-color: #775AFF;
+}
+
+/* Риск - красно-оранжевый */
+.recommendation-risk {
+    background: #FFE5D4;
+    border-color: #B84D00;
+}
+
+/* Успех/Достижение - зеленый */
+.recommendation-success,
+.recommendation-achievement {
+    background: #EDFFF5;
+    border-color: #00A651;
+}
+
+.rec-icon {
+    font-size: 32px;
+    flex-shrink: 0;
+}
+
+.rec-content h4 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #141414;
+}
+
+.rec-content p {
+    margin: 0;
+    font-size: 14px;
+    color: #6D6D6D;
+    line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+    .recommendations-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<script>
+function scrollToMyPosition() {
+    const currentRow = document.querySelector('.current-student');
+    if (currentRow) {
+        currentRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Добавляем эффект мигания
+        currentRow.style.animation = 'highlight 1s ease-in-out';
+        setTimeout(() => {
+            currentRow.style.animation = '';
+        }, 1000);
+    }
+}
+
+// CSS анимация для мигания
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes highlight {
+        0%, 100% { background: #fff3cd; }
+        50% { background: #ffc107; }
+    }
+`;
+document.head.appendChild(style);
+</script>
 {% endblock %}
