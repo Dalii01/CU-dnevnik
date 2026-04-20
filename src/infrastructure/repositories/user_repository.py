@@ -11,13 +11,13 @@ class UserRepository(IUserRepository):
     
     def create(self, user: User) -> User:
         query = """
-        INSERT INTO users (username, email, password_hash, role, first_name, last_name, is_active, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO users (username, email, password_hash, role, first_name, last_name, is_active, created_at, telegram_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """
         user_id = self.db.execute_update(
             query,
             (user.username, user.email, user.password_hash, user.role.value,
-             user.first_name, user.last_name, user.is_active, datetime.utcnow())
+             user.first_name, user.last_name, user.is_active, datetime.utcnow(), user.telegram_id)
         )
         user.id = user_id
         return user
@@ -55,15 +55,15 @@ class UserRepository(IUserRepository):
     
     def update(self, user: User) -> User:
         query = """
-        UPDATE users 
-        SET username = ?, email = ?, password_hash = ?, role = ?, 
-            first_name = ?, last_name = ?, is_active = ?
+        UPDATE users
+        SET username = ?, email = ?, password_hash = ?, role = ?,
+            first_name = ?, last_name = ?, is_active = ?, telegram_id = ?
         WHERE id = ?
         """
         self.db.execute_update(
             query,
             (user.username, user.email, user.password_hash, user.role.value,
-             user.first_name, user.last_name, user.is_active, user.id)
+             user.first_name, user.last_name, user.is_active, user.telegram_id, user.id)
         )
         return user
     
@@ -73,6 +73,12 @@ class UserRepository(IUserRepository):
         return True
     
     def _row_to_user(self, row) -> User:
+        # Для sqlite3.Row используем прямой доступ с обработкой исключений
+        try:
+            telegram_id = row['telegram_id']
+        except (KeyError, IndexError):
+            telegram_id = None
+
         return User(
             id=row['id'],
             username=row['username'],
@@ -82,5 +88,6 @@ class UserRepository(IUserRepository):
             first_name=row['first_name'],
             last_name=row['last_name'],
             is_active=bool(row['is_active']),
-            created_at=datetime.fromisoformat(row['created_at']) if row['created_at'] else None
+            created_at=datetime.fromisoformat(row['created_at']) if row['created_at'] else None,
+            telegram_id=telegram_id
         )

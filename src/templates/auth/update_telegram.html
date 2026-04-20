@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Обновить Telegram ID - Электронный дневник{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1><i class="fab fa-telegram"></i> Обновить Telegram ID</h1>
+        <p class="page-subtitle">Укажите ваш Telegram ID для получения уведомлений о новых оценках</p>
+    </div>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="telegram-info">
+                <div class="info-item">
+                    <h4><i class="fab fa-telegram"></i> Как получить Telegram ID?</h4>
+                    <ol>
+                        <li>Откройте Telegram и найдите бота <strong>@userinfobot</strong></li>
+                        <li>Отправьте команду <code>/start</code></li>
+                        <li>Бот покажет ваш ID (число) или username (@username)</li>
+                        <li>Скопируйте и вставьте сюда</li>
+                    </ol>
+                </div>
+                <div class="info-item">
+                    <h4><i class="fas fa-info-circle"></i> Форматы ID</h4>
+                    <ul>
+                        <li><strong>Числовой ID:</strong> например, <code>123456789</code></li>
+                        <li><strong>Username:</strong> например, <code>@myusername</code></li>
+                        <li><strong>Пустое поле:</strong> отключить уведомления</li>
+                    </ul>
+                </div>
+            </div>
+
+            <form method="POST" class="auth-form">
+                {{ form.hidden_tag() }}
+
+                <div class="form-group">
+                    <label for="{{ form.telegram_id.id }}">{{ form.telegram_id.label }}</label>
+                    {{ form.telegram_id(class="form-control", placeholder="Например: @username или 123456789") }}
+                    {% if form.telegram_id.errors %}
+                        <div class="form-errors">
+                            {% for error in form.telegram_id.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-actions">
+                    {{ form.submit(class="btn btn-primary btn-block") }}
+                    <a href="{{ url_for('auth.profile') }}" class="btn btn-secondary btn-block">
+                        <i class="fas fa-arrow-left"></i> Назад к профилю
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -2,6 +2,9 @@ import os
 from flask import Flask
 from flask_login import LoginManager
 
+# Настройка токена Telegram бота для тестирования
+os.environ['TELEGRAM_BOT_TOKEN'] = '8556807395:AAHgGsuHKjUgP2QpNB4R7mwF7f94yOCL_aM'
+
 # Infrastructure
 from infrastructure.database.connection import DatabaseConnection
 from infrastructure.database.schema import CREATE_TABLES_SQL, INDEXES_SQL
@@ -18,6 +21,7 @@ from infrastructure.repositories.schedule_repository import ScheduleRepository
 from application.services.auth_service import AuthService
 from application.services.student_service import StudentService
 from application.services.admin_user_service import AdminUserService
+from application.services.telegram_service import TelegramService
 
 # Controllers
 from presentation.web.main_controller import MainController
@@ -95,16 +99,18 @@ class CleanArchitectureApp:
                 self.repositories['user'],
                 self.repositories['student']
             ),
+            'telegram': TelegramService(),
         }
-        
-        # Student service зависит от auth service
+
+        # Student service зависит от auth service и telegram service
         self.services['student'] = StudentService(
             self.repositories['student'],
             self.repositories['grade'],
             self.repositories['attendance'],
             self.repositories['schedule'],
             self.repositories['subject'],
-            self.services['auth']
+            self.services['auth'],
+            self.services['telegram']
         )
 
         self.services['admin_user'] = AdminUserService(
@@ -115,7 +121,7 @@ class CleanArchitectureApp:
         self.controllers = {
             'main': MainController(self.services['student']),
             'student': StudentController(self.services['student']),
-            'auth': AuthController(self.services['auth']),
+            'auth': AuthController(self.services['auth'], self.repositories['user']),
             'reports': ReportsController(self.services['student']),
             'admin': AdminController(self.services['admin_user'])
 
