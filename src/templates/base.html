@@ -25,11 +25,6 @@
                         <a href="{{ url_for('reports.reports') }}" class="nav-link">
                             <i class="fas fa-chart-bar"></i> Отчеты
                         </a>
-                    {% if current_user.is_admin %}
-                    <a href="{{ url_for('admin.admin_users') }}" class="nav-link">
-                        <i class="fas fa-users-cog"></i> Управление пользователями
-                    </a>
-                    {% endif %}
                     {% endif %}
                     <div class="nav-user">
                         <a href="{{ url_for('auth.profile') }}" class="nav-link">

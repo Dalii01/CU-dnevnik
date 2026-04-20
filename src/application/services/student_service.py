@@ -67,8 +67,9 @@ class StudentService:
         # Добавляем объект предмета к каждому элементу расписания
         for sched in schedule:
             sched.subject = subjects_dict.get(sched.subject_id)
-
-            statistics = self.calculate_student_statistics(student_id, current_user)
+        
+        # Рассчитываем статистику оценок
+        statistics = self.calculate_student_statistics(student_id, current_user)
         
         return {
             'student': student,
@@ -79,48 +80,9 @@ class StudentService:
             'statistics': statistics
         }
     
-    def calculate_student_statistics(self, student_id: int, current_user) -> dict[str, Any] | None:
-        if not self.auth_service.can_view_student_data(current_user, student_id):
-            return None
-            
-        grades = self.grade_repo.get_by_student(student_id)
-        grade_values = [grade.grade for grade in grades]
-        
-        if not grade_values:
-            return {
-                'mean_grade': 0,
-                'median_grade': 0,
-                'total_grades': 0,
-                'grade_distribution': {}    
-            }
-        
-        # Расчет среднего балла
-        total = sum(grade_values)
-        mean_grade = total / len(grade_values)
-        mean_grade = round(mean_grade, 2) 
-        
-        # Расчет медианного балла
-        sorted_grades = sorted(grade_values)
-        n = len(sorted_grades)
-        if n % 2 == 1:
-            median_grade = sorted_grades[n // 2]
-        else:
-            median_grade = (sorted_grades[n // 2 - 1] + sorted_grades[n // 2]) / 2
-        
-        # Распределение оценок
-        grade_distribution = {}
-        for grade_value in grade_values:
-            grade_distribution[grade_value] = grade_distribution.get(grade_value, 0) + 1
-        
-        return {
-            'mean_grade': mean_grade,
-            'median_grade': median_grade,
-            'total_grades': len(grades),
-            'grade_distribution': grade_distribution
-        }
-    
     def add_grade(self, student_id: int, subject_id: int, grade: int, 
                   comment: str, current_user) -> Grade | None:
+        """Добавить оценку с проверкой прав доступа"""
         if not current_user or not hasattr(current_user, 'id'):
             return None
             
@@ -140,6 +102,7 @@ class StudentService:
     
     def add_attendance(self, student_id: int, subject_id: int, present: bool, 
                       reason: str, current_user) -> Attendance | None:
+        """Добавить отметку посещаемости с проверкой прав доступа"""
         if not current_user or not hasattr(current_user, 'id'):
             return None
             
@@ -156,3 +119,41 @@ class StudentService:
         )
         
         return self.attendance_repo.create(new_attendance)
+    
+    def calculate_student_statistics(self, student_id: int, current_user) -> dict[str, Any] | None:
+            
+        grades = self.grade_repo.get_by_student(student_id)
+        grade_values = [grade.grade for grade in grades]
+        
+        if not grade_values:
+            return {
+                'mean_grade': 0,
+                'median_grade': 0,
+                'total_grades': 0,
+                'grade_distribution': {}    
+            }
+        else:
+            total = sum(grade_values)
+            mean_grade = total / len(grade_values)
+            # округляем до двух знаков после запятой
+            mean_grade = round(mean_grade, 2)
+        
+        sorted_grades = sorted(grade_values)
+        n = len(sorted_grades)
+        if n % 2 == 1:
+            median_grade = sorted_grades[n // 2]
+        else:
+            median_grade = (sorted_grades[n // 2 - 1] + sorted_grades[n // 2]) / 2
+        
+        # Распределение оценок
+        grade_distribution = {}
+        for grade_value in grade_values:
+            grade_distribution[grade_value] = grade_distribution.get(grade_value, 0) + 1
+        
+        return {
+            'mean_grade': mean_grade,
+            'median_grade': median_grade,
+            'total_grades': len(grades),
+            'grade_distribution': grade_distribution
+        }
+    

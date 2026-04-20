@@ -11,23 +11,11 @@ class AuthService:
         self.user_repo = user_repo
         self.student_repo = student_repo
     
-    def authenticate_user(self, username: str, password: str) -> tuple[User | None, str | None]:
-        """Аутентифицирует пользователя
-
-        Returns:
-            tuple: (User object if successful, error message if failed)
-        """
+    def authenticate_user(self, username: str, password: str) -> User | None:
         user = self.user_repo.get_by_username(username)
-        if not user:
-            return None, "Неверное имя пользователя или пароль"
-
-        if not user.is_active:
-            return None, "Ваша учетная запись была деактивирована. Обратитесь к администратору"
-
-        if not user.check_password(password):
-            return None, "Неверное имя пользователя или пароль"
-
-        return user, None
+        if user and user.is_active and user.check_password(password):
+            return user
+        return None
     
     def register_user(self, username: str, email: str, password: str, 
                      first_name: str, last_name: str, role: UserRole) -> tuple[User | None, str | None]:
